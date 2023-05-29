@@ -1,0 +1,69 @@
+* {
+    font-family: "Montserrat", sans-serif;
+}
+
+.banner img {
+    width: 100%;
+    border-radius: 15px;
+}
+
+.pilih-liga img {
+    max-height: 100px;
+}
+
+.pilih-liga .card {
+    border-radius: 15px;
+}
+
+.product .card {
+    border-radius: 15px;
+}
+
+.breadcrumb {
+    padding: 0;
+}
+
+.breadcrumb .active {
+    font-weight: bold;
+    color: black;
+}
+
+.breadcrumb-item {
+    color: black;
+}
+
+.btn-dark {
+    border-radius: 10px;
+}
+
+nav svg {
+    height: 20px;
+}
+
+svg {
+    overflow: hidden;
+    vertical-align: middle;
+}
+
+.wrap-pagination-info {
+    margin-top: 46px;
+    border-top: 1px solid #e6e6e6;
+    padding-top: 10px;
+}
+
+.wrap-pagination-info .hidden {
+    display: block !important;
+}
+
+.wrap-pagination-info .rounded-l-md {
+    margin-right: 5px;
+}
+
+.wrap-pagination-info .rounded-r-md {
+    margin-left: 5px;
+}
+
+.gambar-product {
+    background-color: #f1f1f1;
+    border-width: 0;
+}
