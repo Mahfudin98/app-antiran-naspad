@@ -4,9 +4,13 @@
     <div>
         {{-- Ini view konten --}}
         <div class="container">
-            @if (Session::has('message'))
+            {{--
+            @if (Session::has('success'))
+                <meta http-equiv="refresh" content="5;url={{ session('success') }}">
+            @endif --}}
+            @if (Session::has('success'))
                 <div class="alert alert-success alert-dismissible fade show" role="alert">
-                    {{ session('message') }}
+                    <a href="{{ route('download-pdf', session('success')) }}" class="btn btn-primary">Download Antrian</a>
                 </div>
             @endif
             <div class="banner">

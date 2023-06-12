@@ -1,269 +1,148 @@
-@extends('layouts.baseuser')
-@section('title', 'Antrian & Order')
-@section('content')
-    <div class="container d-flex justify-content-center">
-        <div class="card">
-            <div class="payment-details">
-                <h3>Detail Pesanan</h3>
-                <p>Lengkapi data diri dan cek kembali pesanan kamu.</p>
-            </div>
-            <div class="input-text">
-                <input type="text" placeholder="Masukan nama kamu">
-                <span>Nama</span>
-            </div>
-            <div class="input-text">
-                <input type="text" placeholder="Masukan nomor HP">
-                <span>Nomor HP</span>
-            </div>
-            <div class="summary">
-                <div class="text-data">
-                    <p>Subtotal</p>
-                    <p>Discount</p>
-                    <p>VAT(20%)</p>
-                    <h5>Total</h5>
-                </div>
-                <div class="numerical-data">
-                    <p>$19.00</p>
-                    <p>$5.00</p>
-                    <p>$2.80</p>
-                    <h5>$16.80</h5>
-                </div>
-            </div>
-            <div class="pay mb-3">
-                <button>Pay</button>
-            </div>
-        </div>
-    </div>
-@endsection
+<!doctype html>
+<html>
 
-@section('css')
+<head>
+    <meta charset="utf-8">
+    <title>Antrian #{{ $order->nomor_antrian }}</title>
+
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200&display=swap');
-
-        .card {
-            height: auto;
-            width: 340px;
-            border-radius: 10px;
-            background-color: #fff;
-            padding: 0 20px;
-            box-sizing: border-box;
-            font-family: 'Poppins', sans-serif;
+        .invoice-box {
+            max-width: 800px;
+            margin: auto;
+            padding: 30px;
+            border: 1px solid #eee;
+            box-shadow: 0 0 10px rgba(0, 0, 0, .15);
+            font-size: 16px;
+            line-height: 24px;
+            font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif;
+            color: #555;
         }
 
-        .payment-details {
-            margin-top: 20px;
-        }
-
-        .payment-details p {
-            font-size: 12px;
-            font-weight: 700;
-            color: #89898e;
-        }
-
-        .input-text {
-            position: relative;
-            margin-top: 30px;
-        }
-
-        input[type="text"] {
-
-            height: 40px;
+        .invoice-box table {
             width: 100%;
-            border-radius: 5px;
-            border: none;
-            outline: 0;
-            border: 1px solid #f6f6f7;
-            padding: 0 10px;
-            box-sizing: border-box;
-            font-size: 12px;
+            line-height: normal;
+            /* inherit */
+            text-align: left;
         }
 
-        .input-text span {
-            position: absolute;
-            top: -16px;
-            left: 10px;
-            font-size: 12px;
-            font-weight: 600;
+        .invoice-box table td {
+            padding: 5px;
+            vertical-align: top;
         }
 
-        .input-text-cvv {
-            position: relative;
+        .invoice-box table tr td:nth-child(2) {
+            text-align: right;
         }
 
-        .input-text-cvv input[type="text"] {
-            height: 40px;
-            width: 70px;
-            border: none;
-
-            border-bottom: 1px solid #f6f6f7;
-            border-top: 1px solid #f6f6f7;
-            position: absolute;
-            top: -40px;
-            right: 60px;
+        .invoice-box table tr.top table td {
+            padding-bottom: 20px;
         }
 
-        .cvv input[type="text"] {
-            position: absolute;
-            right: 0;
-            border-right: 1px solid #f6f6f7;
+        .invoice-box table tr.top table td.title {
+            font-size: 45px;
+            line-height: 45px;
+            color: #333;
         }
 
-        .billing {
-            margin-top: 30px;
-            position: relative;
+        .invoice-box table tr.information table td {
+            padding-bottom: 40px;
         }
 
-        .billing span {
-            font-size: 12px;
-            font-weight: 700;
-            position: absolute;
-            top: -16px;
-            left: 10px;
+        .invoice-box table tr.heading td {
+            background: #eee;
+            border-bottom: 1px solid #ddd;
+            font-weight: bold;
         }
 
-        .billing select {
-            height: 35px;
-            width: 100%;
-            font-size: 12px;
-            outline: 0;
-            padding-left: 5px;
-            border: 1px solid #f6f6f7;
-            cursor: pointer;
+        .invoice-box table tr.details td {
+            padding-bottom: 20px;
         }
 
-        .billing select option:nth-child(1) {
-            display: none;
-
+        .invoice-box table tr.item td {
+            border-bottom: 1px solid #eee;
         }
 
-        .zip-state {
-            display: flex;
-            width: 100%;
+        .invoice-box table tr.item.last td {
+            border-bottom: none;
         }
 
-        .zip {
-            width: 50%;
+        .invoice-box table tr.total td:nth-child(2) {
+            border-top: 2px solid #eee;
+            font-weight: bold;
         }
 
-        .zip input[type="text"] {
-            height: 35px;
+        @media only screen and (max-width: 600px) {
+            .invoice-box table tr.top table td {
+                width: 100%;
+                display: block;
+                text-align: center;
+            }
+
+            .invoice-box table tr.information table td {
+                width: 100%;
+                display: block;
+                text-align: center;
+            }
         }
 
-        .state {
-            width: 50%;
+        /** RTL **/
+        .rtl {
+            direction: rtl;
+            font-family: Tahoma, 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif;
         }
 
-        .summary {
-            margin-top: 20px;
-            display: flex;
-            justify-content: space-between;
+        .rtl table {
+            text-align: right;
         }
 
-        .text-data p {
-            margin-top: 3px;
-            font-size: 12px;
-            font-weight: 600;
-        }
-
-        .numerical-data p {
-            margin-top: 3px;
-            font-size: 12px;
-            font-weight: 600;
-        }
-
-        .pay {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin-top: 20px;
-        }
-
-        .pay button {
-            height: 40px;
-            width: 100%;
-            background-color: #7047eb;
-            border: none;
-            outline: 0;
-            border-radius: 5px;
-            color: #fff;
-            font-size: 12px;
-            cursor: pointer;
-            transition: all 0.5s;
-        }
-
-        .pay button:hover {
-            background-color: blue !important;
-        }
-
-        .secure {
-            margin-top: 20px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            /*text-align:center;*/
-            color: #aeaebc;
-        }
-
-        .secure p {
-            font-size: 12px;
-            font-weight: 600;
-            color: #aeaebc;
-            margin-left: 5px;
-        }
-
-        .last {
-            margin-top: 40px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 12px;
-            font-weight: 700;
-        }
-
-        .last p {
-            margin-right: 5px;
-        }
-
-        .last a {
-            color: blue;
-            text-decoration: none;
-            margin-left: 5px;
-            cursor: pointer;
+        .rtl table tr td:nth-child(2) {
+            text-align: left;
         }
     </style>
-@endsection
+</head>
 
-@section('js')
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            for (const el of document.querySelectorAll("[placeholder][data-slots]")) {
-                const pattern = el.getAttribute("placeholder"),
-                    slots = new Set(el.dataset.slots || "_"),
-                    prev = (j => Array.from(pattern, (c, i) => slots.has(c) ? j = i + 1 : j))(0),
-                    first = [...pattern].findIndex(c => slots.has(c)),
-                    accept = new RegExp(el.dataset.accept || "\\d", "g"),
-                    clean = input => {
-                        input = input.match(accept) || [];
-                        return Array.from(pattern, c =>
-                            input[0] === c || slots.has(c) ? input.shift() || c : c
-                        );
-                    },
-                    format = () => {
-                        const [i, j] = [el.selectionStart, el.selectionEnd].map(i => {
-                            i = clean(el.value.slice(0, i)).findIndex(c => slots.has(c));
-                            return i < 0 ? prev[prev.length - 1] : back ? prev[i - 1] || first : i;
-                        });
-                        el.value = clean(el.value).join``;
-                        el.setSelectionRange(i, j);
-                        back = false;
-                    };
-                let back = false;
-                el.addEventListener("keydown", (e) => back = e.key === "Backspace");
-                el.addEventListener("input", format);
-                el.addEventListener("focus", format);
-                el.addEventListener("blur", () => el.value === pattern && (el.value = ""));
-            }
-        });
-    </script>
-@endsection
+<body>
+    <div class="invoice-box">
+        <table cellpadding="0" cellspacing="0">
+
+            <tr class="information">
+                <td colspan="2">
+                    <table>
+                        <tr>
+                            <td>
+                                <strong>PENERIMA</strong><br>
+                                {{ $customer->name }}<br>
+                                {{ $customer->phone }}<br>
+                                Estimasi: {{ $order->estimasi }}<br>
+                                Nomor Antrian <strong> {{ $order->nomor_antrian }}</strong>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+
+            <tr class="heading">
+                <td>Produk</td>
+                <td>Subtotal</td>
+            </tr>
+            @foreach ($product as $row)
+                <tr class="item">
+                    <td>
+                        {{ $row->nama_produk }} <br>
+                        <strong>Harga</strong>: Rp {{ number_format($row->harga) }} x {{ $row->qty }}
+                    </td>
+                    <td>Rp {{ number_format($row->subtotal) }}</td>
+                </tr>
+            @endforeach
+
+            <tr class="total">
+                <td></td>
+                <td>
+                    Subtotal: Rp {{ number_format($product->sum('subtotal')) }}
+                </td>
+            </tr>
+        </table>
+    </div>
+</body>
+
+</html>

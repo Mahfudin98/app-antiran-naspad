@@ -90,6 +90,6 @@ class UserController extends Controller
 
         $pdf = PDF::setOptions(['isHtml5ParserEnabled' => true, 'isRemoteEnabled' => true])->loadview('users.userspdf', compact('base64', 'user'));
         return
-            $pdf->setPaper('a3', 'portail')->setOptions(['defaultFont' => 'serif'])->download('DataUser.pdf');
+            $pdf->setPaper('a4', 'portail')->setOptions(['defaultFont' => 'serif'])->download('DataUser.pdf');
     }
 }

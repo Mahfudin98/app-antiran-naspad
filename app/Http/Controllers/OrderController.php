@@ -10,6 +10,11 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
+use Dompdf\Dompdf;
+use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Response;
+use Illuminate\Support\Facades\View;
+use PDF;
 
 class OrderController extends Controller
 {
@@ -109,7 +114,6 @@ class OrderController extends Controller
                     'status' => 0,
                     'total' => $total
                 ]);
-
                 foreach ($carts as $row) {
                     OrderProduct::create([
                         'order_id' => $order->id,
@@ -124,11 +128,25 @@ class OrderController extends Controller
                 DB::commit();
                 $carts = [];
                 $cookie = cookie('tutik-cart', json_encode($carts), 2880);
-                return redirect(route('home'))->cookie($cookie)->with(Session::flash('message', 'Hore! Pesana berhasil dibuat!'));
+                return redirect(route('home'))->cookie($cookie)->with(Session::flash('success', $customer->id));
             } catch (\Throwable $e) {
                 DB::rollback();
                 return redirect()->back()->with(['error' => $e->getMessage()]);
             }
         }
+    }
+
+    function downloadPdf($id)
+    {
+        $customer = Customer::where('id', $id)->first();
+        $order = Order::where('customer_id', $id)->first();
+        $product = OrderProduct::where('order_id', $order->id)->get();
+        $view = View::make('order.invoice', compact('order', 'customer', 'product'));
+        $dompdf = new Dompdf();
+        $dompdf->loadHtml($view->render());
+        $dompdf->setPaper('A4', 'potrait');
+        $dompdf->render();
+        $output = $dompdf->stream();
+        return $output;
     }
 }

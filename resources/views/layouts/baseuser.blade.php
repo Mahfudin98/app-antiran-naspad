@@ -8,7 +8,6 @@
     <meta name="description" content="">
     <meta name="author" content="">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-
     <title>Chaniago | @yield('title')</title>
 
     <link href="{{ asset('fontawesome/css/all.min.css') }}" rel="stylesheet" type="text/css">

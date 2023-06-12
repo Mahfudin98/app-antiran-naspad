@@ -34,6 +34,7 @@ Route::controller(OrderController::class)->group(function () {
     Route::post('/order-to-cart', 'addTocart')->name('order-to-cart');
     Route::post('/order-udate-cart', 'updateCart')->name('order-update-cart');
     Route::post('/order-checkout-pay', 'orderCheckout')->name('order-pay');
+    Route::get('/order-download/{id}', 'downloadPdf')->name('download-pdf');
 });
 
 Route::controller(PesananController::class)->group(function () {
